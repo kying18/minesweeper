@@ -1,3 +1,15 @@
+"""
+Empty minesweeper template by Kylie Ying
+
+YouTube Kylie Ying: https://www.youtube.com/ycubed 
+Twitch KylieYing: https://www.twitch.tv/kylieying 
+Twitter @kylieyying: https://twitter.com/kylieyying 
+Instagram @kylieyying: https://www.instagram.com/kylieyying/ 
+Website: https://www.kylieying.com
+Github: https://www.github.com/kying18 
+Programmer Beast Mode Spotify playlist: https://open.spotify.com/playlist/4Akns5EUb3gzmlXIdsJkPs?si=qGc4ubKRRYmPHAJAIrCxVQ 
+"""
+
 import random
 import re
 
@@ -56,6 +68,10 @@ class Board:
 
     def __str__(self):
         # return a string that shows the board to the player
+        # note: this part is kinda hard to get the formatting right, you don't have to do it the same way
+        # i did
+        # you can also just copy and paste from the implementation
+        # this part is not that important to understanding the logic of the code :)
         return ''
 
 def play(dim_size=10, num_bombs=10):

@@ -1,22 +1,35 @@
+"""
+Implementation of command-line minesweeper by Kylie Ying
+
+YouTube Kylie Ying: https://www.youtube.com/ycubed 
+Twitch KylieYing: https://www.twitch.tv/kylieying 
+Twitter @kylieyying: https://twitter.com/kylieyying 
+Instagram @kylieyying: https://www.instagram.com/kylieyying/ 
+Website: https://www.kylieying.com
+Github: https://www.github.com/kying18 
+Programmer Beast Mode Spotify playlist: https://open.spotify.com/playlist/4Akns5EUb3gzmlXIdsJkPs?si=qGc4ubKRRYmPHAJAIrCxVQ 
+"""
+
 import random
 import re
 
-# Creating a board object to represent the minesweeper board
-# This is so that when we code up the game, we can just say "create a new board object"
-# and dig on that board, etc.
+# lets create a board object to represent the minesweeper game
+# this is so that we can just say "create a new board object", or
+# "dig here", or "render this game for this object"
 class Board:
     def __init__(self, dim_size, num_bombs):
-        # keep track of these parameters because we might find them helpful later on
+        # let's keep track of these parameters. they'll be helpful later
         self.dim_size = dim_size
         self.num_bombs = num_bombs
 
-        # get the board
-        self.board = self.make_new_board()
+        # let's create the board
+        # helper function!
+        self.board = self.make_new_board() # plant the bombs
         self.assign_values_to_board()
 
         # initialize a set to keep track of which locations we've uncovered
-        # we will put (row,col) tuples into these sets 
-        self.dug = set()
+        # we'll save (row,col) tuples into this set 
+        self.dug = set() # if we dig at 0, 0, then self.dug = {(0,0)}
 
     def make_new_board(self):
         # construct a new board based on the dim size and num bombs
@@ -25,17 +38,25 @@ class Board:
 
         # generate a new board
         board = [[None for _ in range(self.dim_size)] for _ in range(self.dim_size)]
+        # this creates an array like this:
+        # [[None, None, ..., None],
+        #  [None, None, ..., None],
+        #  [...                  ],
+        #  [None, None, ..., None]]
+        # we can see how this represents a board!
+
         # plant the bombs
         bombs_planted = 0
         while bombs_planted < self.num_bombs:
             loc = random.randint(0, self.dim_size**2 - 1) # return a random integer N such that a <= N <= b
-            row = loc // self.dim_size  # we want the number of times dim_size goes into loc to tell us what row
-            col = loc % self.dim_size  # we want the remainder to tell us what index in the row 
+            row = loc // self.dim_size  # we want the number of times dim_size goes into loc to tell us what row to look at
+            col = loc % self.dim_size  # we want the remainder to tell us what index in that row to look at
+
             if board[row][col] == '*':
-                # this means that we've actually planted a bomb here already so we keep going in the loop
-                # without incrementing bombs_planted
-                continue 
-            board[row][col] = '*'
+                # this means we've actually planted a bomb there already so keep going
+                continue
+
+            board[row][col] = '*' # plant the bomb
             bombs_planted += 1
 
         return board
@@ -46,7 +67,8 @@ class Board:
         # effort checking what's around the board later on :)
         for r in range(self.dim_size):
             for c in range(self.dim_size):
-                if self.board[r][c] == '*': # if this is already a bomb, we want to skip over
+                if self.board[r][c] == '*':
+                    # if this is already a bomb, we don't want to calculate anything
                     continue
                 self.board[r][c] = self.get_num_neighboring_bombs(r, c)
 
@@ -61,28 +83,29 @@ class Board:
         # bottom middle: (row+1, col)
         # bottom right: (row+1, col+1)
 
-        # ps we need to make sure we don't go out of bounds!!
+        # make sure to not go out of bounds!
 
-        num_neighboring_bombs = 0  # we will use this variable to keep track of how many we see
+        num_neighboring_bombs = 0
         for r in range(max(0, row-1), min(self.dim_size-1, row+1)+1):
             for c in range(max(0, col-1), min(self.dim_size-1, col+1)+1):
                 if r == row and c == col:
-                    # we don't want to check the location itself
+                    # our original location, don't check
                     continue
                 if self.board[r][c] == '*':
                     num_neighboring_bombs += 1
+
         return num_neighboring_bombs
 
     def dig(self, row, col):
         # dig at that location!
         # return True if successful dig, False if bomb dug
 
-        # a couple of scenarios:
+        # a few scenarios:
         # hit a bomb -> game over
-        # dig at a location with neighboring bombs -> finish dig
-        # dig at a location with no neighboring bombs -> recursively dig neighbors!
+        # dig at location with neighboring bombs -> finish dig
+        # dig at location with no neighboring bombs -> recursively dig neighbors!
 
-        self.dug.add((row,col)) # add to set to keep track that we dug there
+        self.dug.add((row, col)) # keep track that we dug here
 
         if self.board[row][col] == '*':
             return False
@@ -92,31 +115,28 @@ class Board:
         # self.board[row][col] == 0
         for r in range(max(0, row-1), min(self.dim_size-1, row+1)+1):
             for c in range(max(0, col-1), min(self.dim_size-1, col+1)+1):
-                if (r,c) in self.dug: 
-                    # we don't want to dig where we already dug!!
-                    continue
+                if (r, c) in self.dug:
+                    continue # don't dig where you've already dug
                 self.dig(r, c)
 
-        # we should never recursively dig and accidentally hit a bomb
+        # if our initial dig didn't hit a bomb, we *shouldn't* hit a bomb here
         return True
 
     def __str__(self):
+        # this is a magic function where if you call print on this object,
+        # it'll print out what this function returns!
         # return a string that shows the board to the player
 
         # first let's create a new array that represents what the user would see
-        # we will use numbers and spaces
         visible_board = [[None for _ in range(self.dim_size)] for _ in range(self.dim_size)]
-        # let's step through all the possible coordinates and assign a value
         for row in range(self.dim_size):
             for col in range(self.dim_size):
                 if (row,col) in self.dug:
                     visible_board[row][col] = str(self.board[row][col])
                 else:
                     visible_board[row][col] = ' '
-
-        # now let's put this together in a string
-        # string_rep = "\n".join(map(str, visible_board))
-        # return string_rep
+        
+        # put this together in a string
         string_rep = ''
         # get max column widths for printing
         widths = []
@@ -149,42 +169,45 @@ class Board:
             string_rep += ' |\n'
 
         str_len = int(len(string_rep) / self.dim_size)
-        string_rep = indices_row + '   ' + '-'*str_len + '\n' + string_rep + '   ' + '-'*str_len
+        string_rep = indices_row + '-'*str_len + '\n' + string_rep + '-'*str_len
 
         return string_rep
 
+# play the game
 def play(dim_size=10, num_bombs=10):
     # Step 1: create the board and plant the bombs
     board = Board(dim_size, num_bombs)
 
     # Step 2: show the user the board and ask for where they want to dig
-    # Step 3a: if the location is a bomb, then show game over message
-    # Step 3b: if the location is not a bomb, dig recursively until one of the squares is next to a bomb
-    # Step 4: repeat steps 2 and 3a/b until there are no more places to dig, then show victory
-    safe = True
+    # Step 3a: if location is a bomb, show game over message
+    # Step 3b: if location is not a bomb, dig recursively until each square is at least
+    #          next to a bomb
+    # Step 4: repeat steps 2 and 3a/b until there are no more places to dig -> VICTORY!
+    safe = True 
 
-    while len(board.dug) < board.dim_size**2 - num_bombs:
+    while len(board.dug) < board.dim_size ** 2 - num_bombs:
         print(board)
-        user_input = re.split(',(\\s)*', input("Where would you like to dig? Input as row, col: "))
+        # 0,0 or 0, 0 or 0,    0
+        user_input = re.split(',(\\s)*', input("Where would you like to dig? Input as row,col: "))  # '0, 3'
         row, col = int(user_input[0]), int(user_input[-1])
         if row < 0 or row >= board.dim_size or col < 0 or col >= dim_size:
             print("Invalid location. Try again.")
             continue
-        
-        safe = board.dig(row, col)
-        if not safe:  # if we've dug a bomb, it's game over and we need to break out of the loop
-            break
 
-    # now there are two ways to end the loop, either we met the while loop condition or safe is now false
-    # lets check both of these by just checking safe
+        # if it's valid, we dig
+        safe = board.dig(row, col)
+        if not safe:
+            # dug a bomb ahhhhhhh
+            break # (game over rip)
+
+    # 2 ways to end loop, lets check which one
     if safe:
-        print("CONGRATULATIONS!!! YOU ARE VICTORIOUS!")
+        print("CONGRATULATIONS!!!! YOU ARE VICTORIOUS!")
     else:
         print("SORRY GAME OVER :(")
-        # lets reveal the whole board!
+        # let's reveal the whole board!
         board.dug = [(r,c) for r in range(board.dim_size) for c in range(board.dim_size)]
         print(board)
 
-if __name__=='__main__':
+if __name__ == '__main__': # good practice :)
     play()
-    

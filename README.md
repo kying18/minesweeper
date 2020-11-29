@@ -21,3 +21,12 @@ You can continue digging until either you hit a bomb (which is game over) or you
 This repo contains two files:
 - minesweeper.py: implementation of minesweeper
 - minesweeper_empty.py: empty code template for you to start somewhere :)
+
+
+YouTube Kylie Ying: https://www.youtube.com/ycubed 
+Twitch KylieYing: https://www.twitch.tv/kylieying 
+Twitter @kylieyying: https://twitter.com/kylieyying 
+Instagram @kylieyying: https://www.instagram.com/kylieyying/ 
+Website: https://www.kylieying.com
+Github: https://www.github.com/kying18 
+Programmer Beast Mode Spotify playlist: https://open.spotify.com/playlist/4Akns5EUb3gzmlXIdsJkPs?si=qGc4ubKRRYmPHAJAIrCxVQ 

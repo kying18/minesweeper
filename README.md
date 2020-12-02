@@ -2,7 +2,7 @@
 
 This is a Python implementation of 2-D Minesweeper!
 
-Check out the tutorial here: TODO
+Check out the tutorial here: https://youtu.be/Fjw7Lc9zlyU
 
 You start a game by running the script:
 ```

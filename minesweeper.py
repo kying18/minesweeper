@@ -8,6 +8,8 @@ Instagram @kylieyying: https://www.instagram.com/kylieyying/
 Website: https://www.kylieying.com
 Github: https://www.github.com/kying18 
 Programmer Beast Mode Spotify playlist: https://open.spotify.com/playlist/4Akns5EUb3gzmlXIdsJkPs?si=qGc4ubKRRYmPHAJAIrCxVQ 
+
+Project specs, files, code all over the place? Start using Backlog for efficient management!! There is a free tier: https://cutt.ly/ehxImv5
 """
 
 import random

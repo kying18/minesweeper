@@ -213,3 +213,10 @@ def play(dim_size=10, num_bombs=10):
 
 if __name__ == '__main__': # good practice :)
     play()
+    #play again function
+    while True:
+        replay = input('Still wanna play again?(y/n) ')
+        if replay == 'Y' or replay == 'y':
+            play()
+        else:
+            quit()
